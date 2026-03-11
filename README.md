@@ -1,63 +1,103 @@
-# Шаблон репозитория, для успешной сдачи лабораторных работ.
+# Лабораторная работа №1: Источники задач и контракты
 
-## Введение
-Данный шаблон является примером оформления кода для сдачи лабораторных работ.
-Рекомендуется  строго его придерживаться во избежания проблем при сдаче и понижения баллов
+## Цель
+Реализовать подсистему приёма задач для платформы обработки задач через единый контракт `TaskSource` на базе `typing.Protocol`.
 
+## Что сделано
+- `TaskSource(Protocol)` с `@runtime_checkable`: `src/task_platform/protocols.py`
+- Минимальное представление задачи (`id` + `payload`): `src/task_platform/task_repr.py`
+- Источники задач:
+  - файл: `src/task_platform/sources/file_source.py`
+  - генератор: `src/task_platform/sources/generator_source.py`
+  - API-заглушка: `src/task_platform/sources/api_stub_source.py`
+- Intake-модуль с runtime-проверкой контракта: `src/task_platform/intake.py`
 
-## Структура проекта
+## Быстрый запуск через Docker
 
- <pre>
-    .
-    ├── lab<# лабораторной работы>             # Кодовая база вашей лабораторной работы
-    │   ├── src/                               # Исходный код
-    │   ├── tests/                             # Unit тесты
-    │   ├── uv.lock                            # зависимости вашего проекта
-    │   ├── report.pdf                         # Отчет
-    │   ├── .gitignore                         # git ignore файл
-    │   ├──.pre-commit-config.yaml             # Средства автоматизации проверки кодстайла
-    │   ├── README.md                          # Описание вашего проекта, с описанием файлов и с титульником о том,
-                                               # что и какая задача
-</pre>
-
-В папке [src](./src) лежат файлы с реализацией задачи заданной в лабораторной работе. Обязательным файлом является файл
-[main.py](./src/main.py) в котором описана точка входа в приложение - функция **main**. Требования к коду:
-- Переменные, функции и модули именуются по [**snake_case**](https://realpython.com/ref/glossary/snake-case/)
-- Константы должны быть вынесены в файл **constants.py** и именовановаться с помощию символов в верхнем регистре
-- Классы должны именоваться в [**PascalCase**](https://habr.com/ru/articles/724556/)
-- Имена сущностей должны быть осмысленные и содержательные
-- Все отступы должны быть консистентны: 1 TAB = 4 spaces
-- Весь функционал должен быть описан в функциях и в классах. Не допускается писать весь в глобальном скоупе или в одной функции
-- К каждой функции должны быть описаны  [**docstring**](https://peps.python.org/pep-0257/) и аннотации к аргументам и выходным параметрам функций.
-
-В качестве референса проще cходу соблюдать [**PEP8**](https://peps.python.org/pep-0008/) и использовать IDE c готовой поддержкой:
-например PyCharm или VSCode c настроенными плагинами.
-В ходе попыток запушить код в репозиторий ваш код будет проходить проверку статическим анализатором [**mypy**](https://mypy-lang.org/)
-а также с встроенным в [**ruff**](https://astral.sh/ruff) на предмет нарушения код стайла. При работе с кодовой базой
-всю работу необходимо выполнять в [виртуальном окружении](https://docs.python.org/3/tutorial/venv.html)
-
-
-В папке [tests](./tests) лежат [unit тесты](https://tproger.ru/articles/testiruem-na-python-unittest-i-pytest-instrukcija-dlja-nachinajushhih) для проверки функциональности программы или ее частей.
-Рекомендуется использовать pytest. Также название тестов должно быть осмысленно и содержать определение проверямой части.
-Базовые соглашения pytest можно посмотреть [здесь](https://www.qabash.com/pytest-default-naming-conventions-guide/).
-Рекомендуется проверять не только успешные кейсы, но и краевые условия и кейсы в которых была допущена ошибка (неудачные кейсы).
-
-В качестве пакетного менджера в данном шаблоне/репозитории используется [uv](https://github.com/astral-sh/uv).
-Можно использовать и [стандартные виртальные окружения](https://docs.python.org/3/library/venv.html). В таком случае необходимо добавить в репозиторий `requirements.txt`.
-Это достигается командой
-```shell
-pip freeze > requirements.txt
+### 1) Сборка образа
+```bash
+docker build -t task-platform-lab1 .
 ```
-Также разрешается использовать [`poetry`](https://python-poetry.org/)
-## Как работать с репозиторием и шаблонами
-1. Необходимо создать репозиторий из этого шаблона. Посмотреть можно [здесь](https://docs.github.com/ru/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)
-2. Склонировать или спуллить его к себе на машину командами `git pull` или `git clone`
-3. Создать виртуальное окружение:
 
-    a. Для uv прописать команду `uv venv`. Затем прописать `.venv/bin/activate` в терминале
+### 2) Запуск демо
+```bash
+docker run --rm task-platform-lab1
+```
 
-    b. Для обычного python `python -m venv <имя директории где будет храниться папка .venv>`. Затем прописать `.venv/bin/activate` в терминале
-4. Установить [`pre-commit`](https://pre-commit.com/). Для этого достаточно ввести команду `pip install pre-commit`
-5. Выполнить команду `pre-commit install`
-6. При запушивании в репозиторий необходимо правильно составлять сообщения коммита. Правила можно прочитать [здесь](https://github.com/RomuloOliveira/commit-messages-guide/blob/master/README_ru-RU.md)
-7. **Внимательно** читайте то, что пишется при попытке коммита, если исправили ошибки нужно заново добавить отредактированные файлы в гит и попробовать коммитнуть
+Команда запускает `src/main.py` внутри контейнера.
+Сейчас в демо для файлового источника используется `demo_tasks.json` из корня проекта.
+
+### 3) Запуск тестов
+```bash
+docker run --rm task-platform-lab1 pytest -q
+```
+
+Проверка покрытия (минимум 80%):
+```bash
+docker run --rm task-platform-lab1 pytest --cov=src/task_platform --cov-report=term-missing --cov-fail-under=80
+```
+
+## Файловый источник: свой JSON-файл
+
+`FileTaskSource` может читать не только `demo_tasks.json`, но и любой другой JSON-файл похожей структуры.
+
+Пример допустимого файла:
+
+```json
+[
+  {"id": "custom-1", "payload": {"kind": "email", "to": "user@example.com"}},
+  {"id": "custom-2", "payload": {"kind": "report", "period": "2026-03"}}
+]
+```
+
+Важно, чтобы корневой элемент был списком, а также, чтобы каждый элемент содержал поля `id` и `payload`.
+
+## Пример работы
+
+### 1) Подготовьте входной файл
+Создайте `tasks.json` в корне проекта:
+
+```json
+[
+  {"id": "file-1", "payload": {"kind": "email", "to": "user@example.com"}},
+  {"id": "file-2", "payload": {"kind": "report", "period": "2026-03"}}
+]
+```
+
+### 2) Запустите интерактивный сценарий в контейнере
+```bash
+docker run --rm -i -v "$PWD":/app -w /app task-platform-lab1 python - <<'PY'
+from src.task_platform.intake import intake_many
+from src.task_platform.sources.file_source import FileTaskSource
+from src.task_platform.sources.generator_source import GeneratorTaskSource
+from src.task_platform.sources.api_stub_source import ApiStubTaskSource
+from src.task_platform.task_repr import Task
+
+sources = [
+    FileTaskSource("tasks.json"),
+    GeneratorTaskSource(count=2, prefix="gen"),
+    ApiStubTaskSource([
+        Task(id="api-1", payload={"kind": "sync", "target": "crm"}),
+    ]),
+]
+
+tasks = intake_many(sources)
+for task in tasks:
+    print(task.id, task.payload)
+PY
+```
+
+### 3) Что делает пример
+- `FileTaskSource` читает задачи из `tasks.json`.
+- `GeneratorTaskSource` добавляет сгенерированные задачи (`gen-0`, `gen-1`).
+- `ApiStubTaskSource` имитирует внешний API и возвращает подготовленные задачи.
+- `intake_many(...)` объединяет задачи из всех источников через контракт `TaskSource`.
+
+### 4) Вывод
+```
+file-1 {'kind': 'email', 'to': 'user@example.com'}
+file-2 {'kind': 'report', 'period': '2026-03'}
+gen-0 {'index': 0}
+gen-1 {'index': 1}
+api-1 {'kind': 'sync', 'target': 'crm'}
+```
