@@ -24,7 +24,7 @@ docker build -t task-platform-lab1 .
 docker run --rm task-platform-lab1
 ```
 
-Команда запускает `src/main.py` внутри контейнера.
+Команда запускает `src/main.py` в контейнере.
 Сейчас в демо для файлового источника используется `demo_tasks.json` из корня проекта.
 
 ### 3) Запуск тестов
