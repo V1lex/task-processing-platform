@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -13,7 +14,34 @@ class FileTaskSource:
 
     def get_tasks(self) -> list[Task]:
         """Считывает и парсит задачи из JSON-файла."""
-        raw_items: list[dict[str, Any]] = json.loads(
-            self._file_path.read_text(encoding="utf-8")
+        raw_items = json.loads(self._file_path.read_text(encoding="utf-8"))
+        if not isinstance(raw_items, list):
+            raise ValueError("JSON-файл должен содержать список задач")
+
+        return [self._build_task(item, index) for index, item in enumerate(raw_items)]
+
+    def _build_task(self, item: Any, index: int) -> Task:
+        if not isinstance(item, dict):
+            raise ValueError(
+                "Каждая задача в JSON-файле должна быть объектом; "
+                f"некорректный элемент найден по индексу {index}"
+            )
+
+        created_at = self._parse_created_at(item.get("created_at"))
+        return Task(
+            id=item["id"],
+            payload=item["payload"],
+            description=item.get("description"),
+            priority=item.get("priority", 3),
+            status=item.get("status", "pending"),
+            created_at=created_at,
         )
-        return [Task(id=str(item["id"]), payload=item["payload"]) for item in raw_items]
+
+    def _parse_created_at(self, raw_value: Any) -> datetime | None:
+        if raw_value is None:
+            return None
+        if isinstance(raw_value, datetime):
+            return raw_value
+        if isinstance(raw_value, str):
+            return datetime.fromisoformat(raw_value)
+        return raw_value
