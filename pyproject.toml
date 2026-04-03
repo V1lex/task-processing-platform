@@ -3,7 +3,10 @@ name = "labs"
 version = "0.1.0"
 description = "Task processing platform labs"
 requires-python = ">=3.12"
-dependencies = [
+dependencies = []
+
+[project.optional-dependencies]
+test = [
     "pytest>=8.4.2",
     "pytest-cov>=5.0.0",
 ]

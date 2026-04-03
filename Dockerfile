@@ -13,5 +13,6 @@ COPY src ./src
 COPY tests ./tests
 COPY pyproject.toml ./
 COPY README.md ./
+COPY demo_tasks.json ./
 
-CMD ["python", "src/main.py"]
+CMD ["python", "-m", "src.main"]

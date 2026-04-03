@@ -1,10 +1,13 @@
 import json
 from pathlib import Path
 
+import pytest
+
 from src.task_platform.intake import intake_many
 from src.task_platform.sources.api_stub_source import ApiStubTaskSource
 from src.task_platform.sources.file_source import FileTaskSource
 from src.task_platform.sources.generator_source import GeneratorTaskSource
+from src.task_platform.task_exceptions import TaskIdError
 from src.task_platform.task_repr import Task
 
 
@@ -75,3 +78,33 @@ def test_intake_many_collects_from_all_sources(tmp_path: Path) -> None:
 
     _assert_task_shape(tasks)
     assert [task.id for task in tasks] == ["f-1", "gen-0", "api-1"]
+
+
+def test_file_source_requires_json_list(tmp_path: Path) -> None:
+    file_path = tmp_path / "tasks.json"
+    file_path.write_text(
+        json.dumps({"id": "f-1", "payload": {"source": "file"}}, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="список задач"):
+        FileTaskSource(file_path).get_tasks()
+
+
+def test_file_source_requires_object_items(tmp_path: Path) -> None:
+    file_path = tmp_path / "tasks.json"
+    file_path.write_text(json.dumps(["broken"], ensure_ascii=False), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="индексу 0"):
+        FileTaskSource(file_path).get_tasks()
+
+
+def test_file_source_preserves_task_id_validation(tmp_path: Path) -> None:
+    file_path = tmp_path / "tasks.json"
+    file_path.write_text(
+        json.dumps([{"id": 123, "payload": {"source": "file"}}], ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(TaskIdError, match="ожидается строка"):
+        FileTaskSource(file_path).get_tasks()

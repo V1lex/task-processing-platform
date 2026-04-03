@@ -12,7 +12,11 @@ class GeneratorTaskSource:
 
     def _iter_tasks(self) -> Iterator[Task]:
         for index in range(self._count):
-            yield Task(id=f"{self._prefix}-{index}", payload={"index": index})
+            yield Task(
+                id=f"{self._prefix}-{index}",
+                payload={"index": index},
+                description=f"Сгенерированная задача {index}",
+            )
 
     def get_tasks(self) -> list[Task]:
         """Возвращает сгенерированные задачи в виде списка."""
