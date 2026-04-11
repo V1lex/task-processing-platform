@@ -15,6 +15,7 @@
       "value": 20
     },
     "description": "Собрать ежедневный отчёт",
+    "priority": 2,
     "status": "in_progress"
   }
 ]
