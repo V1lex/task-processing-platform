@@ -11,6 +11,7 @@ from src.task_platform.task_exceptions import (
     TaskStateTransitionError,
     TaskStatusError,
 )
+from src.task_platform.task_queue import TaskQueue, TaskQueueIterator
 from src.task_platform.task_repr import Task
 
 __all__ = [
@@ -23,6 +24,8 @@ __all__ = [
     "TaskIdError",
     "TaskImmutableFieldError",
     "TaskPriorityError",
+    "TaskQueue",
+    "TaskQueueIterator",
     "TaskStateTransitionError",
     "TaskStatusError",
     "TaskSource",
