@@ -14,7 +14,7 @@ class GeneratorTaskSource:
         for index in range(self._count):
             yield Task(
                 id=f"{self._prefix}-{index}",
-                payload={"index": index},
+                payload={"kind": "generated", "index": index},
                 description=f"Сгенерированная задача {index}",
             )
 

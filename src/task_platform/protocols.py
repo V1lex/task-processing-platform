@@ -9,3 +9,14 @@ class TaskSource(Protocol):
 
     def get_tasks(self) -> list[Task]:
         """Возвращает задачи из текущего источника."""
+
+
+@runtime_checkable
+class AsyncTaskHandler(Protocol):
+    """Контракт асинхронного обработчика задач."""
+
+    def can_handle(self, task: Task) -> bool:
+        """Показывает, может ли обработчик выполнить задачу."""
+
+    async def handle(self, task: Task) -> None:
+        """Асинхронно выполняет прикладную логику задачи."""

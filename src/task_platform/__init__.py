@@ -1,5 +1,12 @@
+from src.task_platform.async_executor import (
+    AsyncTaskExecutor,
+    AsyncTaskQueue,
+    InvalidTaskHandlerError,
+    PayloadKindHandler,
+    TaskExecutionResult,
+)
 from src.task_platform.intake import InvalidTaskSourceError, intake_many, intake_tasks
-from src.task_platform.protocols import TaskSource
+from src.task_platform.protocols import AsyncTaskHandler, TaskSource
 from src.task_platform.task_exceptions import (
     TaskCreatedAtError,
     TaskDescriptionError,
@@ -16,6 +23,11 @@ from src.task_platform.task_repr import Task
 
 __all__ = [
     "InvalidTaskSourceError",
+    "InvalidTaskHandlerError",
+    "AsyncTaskExecutor",
+    "AsyncTaskHandler",
+    "AsyncTaskQueue",
+    "PayloadKindHandler",
     "Task",
     "TaskCreatedAtError",
     "TaskDescriptionError",
@@ -26,6 +38,7 @@ __all__ = [
     "TaskPriorityError",
     "TaskQueue",
     "TaskQueueIterator",
+    "TaskExecutionResult",
     "TaskStateTransitionError",
     "TaskStatusError",
     "TaskSource",
