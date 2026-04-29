@@ -1,7 +1,7 @@
 import asyncio
 import inspect
 import logging
-from collections.abc import Iterable, Sequence
+from collections.abc import AsyncIterator, Iterable, Sequence
 from contextlib import AsyncExitStack
 from dataclasses import dataclass
 from types import TracebackType
@@ -44,6 +44,15 @@ class AsyncTaskQueue:
 
     def __len__(self) -> int:
         return self.qsize()
+
+    async def __aiter__(self) -> AsyncIterator[Task]:
+        """Асинхронно обходит задачи, которые уже находятся в очереди."""
+        while not self.empty():
+            task = await self.get()
+            try:
+                yield task
+            finally:
+                self.task_done()
 
     def empty(self) -> bool:
         """Показывает, пуста ли очередь прямо сейчас."""

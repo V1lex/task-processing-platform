@@ -79,6 +79,24 @@ def test_async_queue_puts_and_gets_tasks() -> None:
     asyncio.run(scenario())
 
 
+def test_async_queue_supports_async_iteration() -> None:
+    async def scenario() -> None:
+        queue = AsyncTaskQueue(
+            [
+                Task(id="task-1", payload={"kind": "email"}),
+                Task(id="task-2", payload={"kind": "sync"}),
+            ]
+        )
+
+        task_ids = [task.id async for task in queue]
+
+        assert task_ids == ["task-1", "task-2"]
+        assert queue.empty()
+        await queue.join()
+
+    asyncio.run(scenario())
+
+
 def test_async_queue_accepts_only_task_instances() -> None:
     queue = AsyncTaskQueue()
 

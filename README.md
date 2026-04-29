@@ -76,6 +76,9 @@ from src.task_platform.task_repr import Task
 
 queue = AsyncTaskQueue()
 await queue.put(Task(id="task-1", payload={"kind": "email"}))
+
+async for task in queue:
+    ...
 ```
 
 ### `AsyncTaskExecutor`
