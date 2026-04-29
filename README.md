@@ -232,12 +232,3 @@ gen-0: completed
 gen-1: completed
 api-1: completed
 ```
-
-## Проверенный результат
-
-На момент сдачи:
-
-```text
-40 passed
-Total coverage: 93.21%
-```
