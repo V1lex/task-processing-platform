@@ -15,7 +15,7 @@ from src.task_platform.task_repr import Task
 
 
 def main() -> None:
-    """Демонстрационный вход в программу для асинхронного исполнителя из ЛР4."""
+    """Демонстрационный вход в платформу обработки задач."""
     demo_file = Path("demo_tasks.json")
     if not demo_file.exists():
         raise FileNotFoundError("Файл demo_tasks.json не найден")
