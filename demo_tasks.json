@@ -2,7 +2,7 @@
   {
     "id": "file-1",
     "payload": {
-      "source": "file",
+      "kind": "email",
       "value": 10
     },
     "description": "Импортировать данные из файла",
@@ -11,7 +11,7 @@
   {
     "id": "file-2",
     "payload": {
-      "source": "file",
+      "kind": "report",
       "value": 20
     },
     "description": "Собрать ежедневный отчёт",

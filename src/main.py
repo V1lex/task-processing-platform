@@ -1,5 +1,11 @@
+import asyncio
 from pathlib import Path
 
+from src.task_platform.async_executor import (
+    AsyncTaskExecutor,
+    AsyncTaskQueue,
+    PayloadKindHandler,
+)
 from src.task_platform.intake import intake_many
 from src.task_platform.sources.api_stub_source import ApiStubTaskSource
 from src.task_platform.sources.file_source import FileTaskSource
@@ -9,7 +15,7 @@ from src.task_platform.task_repr import Task
 
 
 def main() -> None:
-    """Демонстрационный вход в программу для очереди задач из ЛР3."""
+    """Демонстрационный вход в программу для асинхронного исполнителя из ЛР4."""
     demo_file = Path("demo_tasks.json")
     if not demo_file.exists():
         raise FileNotFoundError("Файл demo_tasks.json не найден")
@@ -21,7 +27,7 @@ def main() -> None:
             [
                 Task(
                     id="api-1",
-                    payload={"source": "api"},
+                    payload={"kind": "sync"},
                     description="Получить задачи из API-заглушки",
                 )
             ]
@@ -41,6 +47,21 @@ def main() -> None:
     print("\nЗадачи с приоритетом не ниже 4:")
     for task in queue.filter_by_priority(4):
         print(task.summary)
+
+    async_queue = AsyncTaskQueue(queue.filter_by_status("pending"))
+    handlers = [
+        PayloadKindHandler("email"),
+        PayloadKindHandler("generated"),
+        PayloadKindHandler("report"),
+        PayloadKindHandler("sync"),
+    ]
+
+    print("\nАсинхронная обработка готовых задач:")
+    results = asyncio.run(
+        AsyncTaskExecutor(async_queue, handlers, worker_count=2).run()
+    )
+    for result in results:
+        print(f"{result.task_id}: {result.status}")
 
 
 if __name__ == "__main__":
